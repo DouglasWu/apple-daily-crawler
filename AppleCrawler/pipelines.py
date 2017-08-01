@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
 
-POST_PATH = 'data/apple_post.json'
-LINES_PATH = 'data/apple_post_lines.json'
-
 # convert the dumped data into a real json file
 def jsonfy(in_path, out_path):
     with open(in_path, 'r') as fp:
@@ -18,7 +15,7 @@ def jsonfy(in_path, out_path):
 
 class ApplecrawlerPipeline(object):
     def open_spider(self, spider):
-        self.fp= open(LINES_PATH, 'w')
+        self.fp= open(spider.lines_path, 'w')
 
     def process_item(self, item, spider):
         line = json.dumps(item, ensure_ascii=False) + '\n'
@@ -26,4 +23,4 @@ class ApplecrawlerPipeline(object):
 
     def close_spider(self, spider):
         self.fp.close()
-        jsonfy(LINES_PATH, POST_PATH)
+        jsonfy(spider.lines_path, spider.post_path)

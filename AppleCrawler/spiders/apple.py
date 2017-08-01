@@ -2,12 +2,29 @@
 import scrapy
 from bs4 import BeautifulSoup as bs
 import urllib.parse
-from AppleCrawler.spiders.utils import get_start_urls, host_url
+import datetime
+from AppleCrawler.spiders.utils import daterange
+
+archive_url = 'http://www.appledaily.com.tw/appledaily/archive/{}'
+host_url = 'http://www.appledaily.com.tw'
+
+def get_start_urls():
+    date_strings = []
+    start_date = datetime.date(2017, 1, 1)
+    end_date = datetime.date(2017, 1, 2)
+    for single_date in daterange(start_date, end_date):
+        date_strings.append(single_date.strftime("%Y%m%d"))
+    urls = []
+    for date_str in date_strings:
+        urls.append(archive_url.format(date_str))
+    return urls
 
 class AppleSpider(scrapy.Spider):
     name = "apple"
     # get all archive pages of a specific date range
     start_urls = get_start_urls()
+    post_path = 'data/apple.json'
+    lines_path = 'data/apple.json.lines'
 
     def parse(self, response):
         soup = bs(response.body, 'lxml')
